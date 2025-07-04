@@ -1,24 +1,22 @@
-import React from "react";
-
 function Gallery({ imagenes }) {
   if (!imagenes.length) {
     return (
-      <p className="text-center col-span-full text-gray-500">
-        No hay imágenes para mostrar.
-      </p>
+      <div className="text-center text-gray-400 mt-10">No hay imágenes para mostrar.</div>
     );
   }
 
   return (
-    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 max-w-3xl mx-auto">
+    <div className="grid gap-7 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-6xl mx-auto">
       {imagenes.map((img) => (
-        <div key={img.id} className="bg-white p-2 rounded shadow">
+        <div
+          key={img.id}
+          className="transition-transform duration-300 hover:scale-105"
+        >
           <img
-            src={img.src.medium}
-            alt={img.alt}
-            className="w-full h-40 object-cover rounded"
+            src={img.src.large}
+            alt={img.alt || "Foto"}
+            className="rounded-xl w-full h-56 object-cover group-hover:opacity-90 transition"
           />
-          <p className="text-xs text-gray-500 mt-1">{img.photographer}</p>
         </div>
       ))}
     </div>

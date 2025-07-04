@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
+import SearchBar from "./components/SearchBar";
+import CategoryButtons from "./components/CategoryButtons";
+import Gallery from "./components/Gallery";
+
+const categoriasBase = ["mountain", "beach", "forest", "city", "food", "animals", "space"];
 
 function App() {
   const [imagenes, setImagenes] = useState([]);
+  const [busqueda, setBusqueda] = useState("mountain");
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch(
-          "https://api.pexels.com/v1/search?query=nature&per_page=12&orientation=square",
+          `https://api.pexels.com/v1/search?query=${busqueda}&per_page=12&orientation=square`,
           {
             headers: {
               Authorization: "fmYHl2gP2mlomfecSUjmXvloU5gqRvy7oewh4JMxZ4C8g2BssaFFgNtl"
@@ -21,25 +28,31 @@ function App() {
       }
     }
     fetchData();
-  }, []);
+  }, [busqueda]);
+
+  const handleInputChange = (e) => setInput(e.target.value);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (input.trim() !== "") setBusqueda(input.trim());
+    setInput("");
+  };
+  const handleCategoriaClick = (cat) => setBusqueda(cat);
 
   return (
-    <div className="min-h-screen bg-blue-50 py-8 px-2">
-      <h1 className="text-2xl font-bold text-center mb-5 text-blue-800">
-        Galería de Fotos (Nature)
+    <div className="min-h-screen px-2 py-10">
+      <h1 className="text-6xl font-bold text-center text-black pb-3">
+        SnapShot
       </h1>
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 max-w-3xl mx-auto">
-        {imagenes.map((img) => (
-          <div key={img.id} className="bg-white p-2 rounded shadow">
-            <img
-              src={img.src.medium}
-              alt={img.alt}
-              className="w-full h-40 object-cover rounded"
-            />
-            <p className="text-xs text-gray-500 mt-1">{img.photographer}</p>
-          </div>
-        ))}
-      </div>
+      <SearchBar
+        value={input}
+        onChange={handleInputChange}
+        onSubmit={handleSearchSubmit}
+      />
+      <CategoryButtons
+        categorias={categoriasBase}
+        onSelect={handleCategoriaClick}
+      />
+      <Gallery imagenes={imagenes} />
     </div>
   );
 }
